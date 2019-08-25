@@ -121,7 +121,7 @@ class ZSSR:
         for ind, input_img in enumerate(self.input_list):
 
             # Use augmented outputs and back projection to enhance result. Also save the result.
-            self.input = input_img[0]
+            self.input = input_img
 
             post_processed_output = self.final_test()
 
