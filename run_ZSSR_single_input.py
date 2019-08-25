@@ -6,12 +6,13 @@ import ZSSR
 
 def main(input_img_list, ground_truth_list, kernels_list, gpu, conf_str, results_path):
     # Choose the wanted GPU
+    gpu=0
     if gpu is not None:
         os.environ["CUDA_VISIBLE_DEVICES"] = '%s' % gpu
 
     # 0 input for ground-truth or kernels means None
     ground_truth_list = [None if ground_truth == '0' else ground_truth for ground_truth in ground_truth_list]
-    print('*****', kernels_list)
+    # print('*****', kernels_list)
     kernels_list = [None if kernels == '0' else kernels.split(';')[:-1] for kernels in kernels_list]
 
     # Setup configuration and results directory

@@ -40,12 +40,12 @@ def main(conf_name, gpu):
         for kernel_file in kernel_files:
             if not os.path.isfile(kernel_file[:-1]):
                 kernel_files_str = '0'
-                print('no kernel loaded')
+                # print('no kernel loaded')
                 break
         kernel_files_str_list.append(kernel_files_str)
 
-        print('kernel files: ')
-        print(kernel_files)
+        # print('kernel files: ')
+        # print(kernel_files)
 
         # This option uses all the gpu resources efficiently
     # if gpu == 'all':

@@ -101,7 +101,7 @@ class ZSSR:
         for self.sf_ind, (sf, self.kernel) in enumerate(zip(self.conf.scale_factors, self.kernels)):
             for ind, input_img in enumerate(self.input_list):
                 # verbose
-                self.input = input_img[ind]
+                self.input = input_img
                 self.gt = self.gt_list[ind]
                 self.hr_fathers_sources = [self.input]
                 print('** Start training for sf={}, img_ind={} **'.format(sf, ind))
