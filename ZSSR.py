@@ -58,18 +58,20 @@ class ZSSR:
     # Tensorflow graph default
     sess = None
 
-    def __init__(self, input_img, conf=Config(), ground_truth=None, kernels=None):
+    def __init__(self, input_img_list, conf=Config(), ground_truth_list=None, kernels_list=None):
         # Acquire meta parameters configuration from configuration class as a class variable
         self.conf = conf
 
         # Read input image (can be either a numpy array or a path to an image file)
-        self.input = input_img if type(input_img) is not str else img.imread(input_img)
+        # self.input = input_img_list if type(input_img_list) is not str else img.imread(input_img_list)
+        self.input_list = [img.imread(input_img) if isinstance(input_img, str) else input_img for input_img in input_img_list]
+        self.input = self.input_list[0]
 
         # For evaluation purposes, ground-truth image can be supplied.
-        self.gt = ground_truth if type(ground_truth) is not str else img.imread(ground_truth)
+        self.gt_list = [ground_truth if type(ground_truth) is not str else img.imread(ground_truth) for ground_truth in ground_truth_list]
 
         # Preprocess the kernels. (see function to see what in includes).
-        self.kernels = preprocess_kernels(kernels, conf)
+        self.kernels_list = [preprocess_kernels(kernels, conf) for kernels in kernels_list]
 
         # Prepare TF default computational graph
         self.model = tf.Graph()
@@ -82,46 +84,54 @@ class ZSSR:
 
         # The first hr father source is the input (source goes through augmentation to become a father)
         # Later on, if we use gradual sr increments, results for intermediate scales will be added as sources.
-        self.hr_fathers_sources = [self.input]
+        self.hr_fathers_sources = self.input_list
 
         # We keep the input file name to save the output with a similar name. If array was given rather than path
         # then we use default provided by the configs
-        self.file_name = input_img if type(input_img) is str else conf.name
+        # self.file_name = input_img_list if type(input_img_list) is str else conf.name
+        if isinstance(input_img_list[0], str):
+            self.file_name_list = [input_img for input_img in input_img_list]
+        else:
+            self.file_name_list = conf.name
 
     def run(self):
         # Run gradually on all scale factors (if only one jump then this loop only happens once)
-        for self.sf_ind, (sf, self.kernel) in enumerate(zip(self.conf.scale_factors, self.kernels)):
-            # verbose
-            print('** Start training for sf=', sf, ' **')
+        # for ind, input_img in enumerate(self.input_list):
+        # for self.sf_ind, (sf, self.kernel) in enumerate(zip(self.conf.scale_factors, self.kernels_list)[ind]):
+        for sf_ind in 
+                # verbose
+                self.input = input_img
+                print('** Start training for sf=', sf, ' **')
+                print('** Started training for ')
 
-            # Relative_sf (used when base change is enabled. this is when input is the output of some previous scale)
-            if np.isscalar(sf):
-                sf = [sf, sf]
-            self.sf = np.array(sf) / np.array(self.base_sf)
-            self.output_shape = np.uint(np.ceil(np.array(self.input.shape[0:2]) * sf))
+                # Relative_sf (used when base change is enabled. this is when input is the output of some previous scale)
+                if np.isscalar(sf):
+                    sf = [sf, sf]
+                self.sf = np.array(sf) / np.array(self.base_sf)
+                self.output_shape = np.uint(np.ceil(np.array(self.input.shape[0:2]) * sf))
 
-            # Initialize network
-            self.init_sess(init_weights=self.conf.init_net_for_each_sf)
+                # Initialize network
+                self.init_sess(init_weights=self.conf.init_net_for_each_sf)
 
-            # Train the network
-            self.train()
+                # Train the network
+                self.train()
 
-            # Use augmented outputs and back projection to enhance result. Also save the result.
-            post_processed_output = self.final_test()
+                # Use augmented outputs and back projection to enhance result. Also save the result.
+                post_processed_output = self.final_test()
 
-            # Keep the results for the next scale factors SR to use as dataset
-            self.hr_fathers_sources.append(post_processed_output)
+                # Keep the results for the next scale factors SR to use as dataset
+                self.hr_fathers_sources.append(post_processed_output)
 
-            # In some cases, the current output becomes the new input. If indicated and if this is the right scale to
-            # become the new base input. all of these conditions are checked inside the function.
-            self.base_change()
+                # In some cases, the current output becomes the new input. If indicated and if this is the right scale to
+                # become the new base input. all of these conditions are checked inside the function.
+                self.base_change()
 
-            # Save the final output if indicated
-            if self.conf.save_results:
-                sf_str = ''.join('X%.2f' % s for s in self.conf.scale_factors[self.sf_ind])
-                plt.imsave('%s/%s_zssr_%s.png' %
-                           (self.conf.result_path, os.path.basename(self.file_name)[:-4], sf_str),
-                           post_processed_output, vmin=0, vmax=1)
+                # Save the final output if indicated
+                if self.conf.save_results:
+                    sf_str = ''.join('X%.2f' % s for s in self.conf.scale_factors[self.sf_ind])
+                    plt.imsave('%s/%s_zssr_%s.png' %
+                               (self.conf.result_path, os.path.basename(self.file_name_list)[:-4], sf_str),
+                               post_processed_output, vmin=0, vmax=1)
 
             # verbose
             print('** Done training for sf=', sf, ' **')
@@ -152,6 +162,7 @@ class ZSSR:
             # Activate filters on layers one by one (this is just building the graph, no calculation is done here)
             self.layers_t = [self.lr_son_t] + [None] * meta.depth
             for l in range(meta.depth - 1):
+                print('Layer {} shape: {}'.format(l, self.layers_t[l].shape))
                 self.layers_t[l + 1] = tf.nn.relu(tf.nn.conv2d(self.layers_t[l], self.filters_t[l],
                                                                [1, 1, 1, 1], "SAME", name='layer_%d' % (l + 1)))
 
@@ -195,14 +206,14 @@ class ZSSR:
         # This only happens if there exists ground-truth and sf is not the last one (or too close to it).
         # We use imresize with both scale and output-size, see comment in forward_backward_pass.
         # noinspection PyTypeChecker
-        self.gt_per_sf = (imresize(self.gt,
+        self.gt_per_sf = (imresize(self.gt_list,
                                    scale_factor=self.sf / self.conf.scale_factors[-1],
                                    output_shape=self.output_shape,
                                    kernel=self.conf.downscale_gt_method)
-                          if (self.gt is not None and
+                          if (self.gt_list is not None and
                               self.sf is not None and
                               np.any(np.abs(self.sf - self.conf.scale_factors[-1]) > 0.01))
-                          else self.gt)
+                          else self.gt_list)
 
     def forward_backward_pass(self, lr_son, hr_father):
         # First gate for the lr-son into the network is interpolation to the size of the father
