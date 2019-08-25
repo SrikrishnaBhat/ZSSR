@@ -98,8 +98,8 @@ class ZSSR:
     def run(self):
         # Run gradually on all scale factors (if only one jump then this loop only happens once)
         self.kernels = self.kernels_list[0]
-        for self.sf_ind, (sf, self.kernel) in enumerate(zip(self.conf.scale_factors, self.kernels)):
-            for ind, input_img in enumerate(self.input_list):
+        for ind, input_img in enumerate(self.input_list):
+            for self.sf_ind, (sf, self.kernel) in enumerate(zip(self.conf.scale_factors, self.kernels)):
                 # verbose
                 self.input = input_img.copy()
                 self.gt = self.gt_list[ind]
@@ -121,7 +121,7 @@ class ZSSR:
         for ind, input_img in enumerate(self.input_list):
 
             # Use augmented outputs and back projection to enhance result. Also save the result.
-            self.input = input_img.copy(    )
+            self.input = input_img.copy()
 
             post_processed_output = self.final_test()
 
