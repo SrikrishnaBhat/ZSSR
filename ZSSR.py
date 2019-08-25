@@ -92,7 +92,7 @@ class ZSSR:
         # Run gradually on all scale factors (if only one jump then this loop only happens once)
         for self.sf_ind, (sf, self.kernel) in enumerate(zip(self.conf.scale_factors, self.kernels)):
             # verbose
-            print '** Start training for sf=', sf, ' **'
+            print('** Start training for sf=', sf, ' **')
 
             # Relative_sf (used when base change is enabled. this is when input is the output of some previous scale)
             if np.isscalar(sf):
@@ -124,7 +124,7 @@ class ZSSR:
                            post_processed_output, vmin=0, vmax=1)
 
             # verbose
-            print '** Done training for sf=', sf, ' **'
+            print('** Done training for sf=', sf, ' **')
 
         # Return the final post processed output.
         # noinspection PyUnboundLocalVariable
@@ -236,9 +236,9 @@ class ZSSR:
         if (not (1 + self.iter) % self.conf.learning_rate_policy_check_every
                 and self.iter - self.learning_rate_change_iter_nums[-1] > self.conf.min_iters):
             # noinspection PyTupleAssignmentBalance
-            [slope, _], [[var, _], _] = np.polyfit(self.mse_steps[-(self.conf.learning_rate_slope_range /
+            [slope, _], [[var, _], _] = np.polyfit(self.mse_steps[-(self.conf.learning_rate_slope_range //
                                                                     self.conf.run_test_every):],
-                                                   self.mse_rec[-(self.conf.learning_rate_slope_range /
+                                                   self.mse_rec[-(self.conf.learning_rate_slope_range //
                                                                   self.conf.run_test_every):],
                                                    1, cov=True)
 
@@ -246,12 +246,12 @@ class ZSSR:
             std = np.sqrt(var)
 
             # Verbose
-            print 'slope: ', slope, 'STD: ', std
+            print('slope: ', slope, 'STD: ', std)
 
             # Determine learning rate maintaining or reduction by the ration between slope and noise
             if -self.conf.learning_rate_change_ratio * slope < std:
                 self.learning_rate /= 10
-                print "learning rate updated: ", self.learning_rate
+                print("learning rate updated: ", self.learning_rate)
 
                 # Keep track of learning rate changes for plotting purposes
                 self.learning_rate_change_iter_nums.append(self.iter)
@@ -283,8 +283,8 @@ class ZSSR:
 
         # Display test results if indicated
         if self.conf.display_test_results:
-            print 'iteration: ', self.iter, 'reconstruct mse:', self.mse_rec[-1], ', true mse:', (self.mse[-1]
-                                                                                                  if self.mse else None)
+            print('iteration: ', self.iter, 'reconstruct mse:', self.mse_rec[-1], ', true mse:', (self.mse[-1]
+                                                                                                  if self.mse else None))
 
         # plot losses if needed
         if self.conf.plot_losses:
@@ -292,7 +292,7 @@ class ZSSR:
 
     def train(self):
         # main training loop
-        for self.iter in xrange(self.conf.max_iters):
+        for self.iter in range(self.conf.max_iters):
             # Use augmentation from original input image to create current father.
             # If other scale factors were applied before, their result is also used (hr_fathers_in)
             self.hr_father = random_augment(ims=self.hr_fathers_sources,
@@ -314,7 +314,7 @@ class ZSSR:
 
             # Display info and save weights
             if not self.iter % self.conf.display_every:
-                print 'sf:', self.sf*self.base_sf, ', iteration: ', self.iter, ', loss: ', self.loss[self.iter]
+                print('sf:', self.sf*self.base_sf, ', iteration: ', self.iter, ', loss: ', self.loss[self.iter])
 
             # Test network
             if self.conf.run_test and (not self.iter % self.conf.run_test_every):
@@ -389,7 +389,7 @@ class ZSSR:
                 # Keeping track- this is the index inside the base scales list (provided in the config)
                 self.base_ind += 1
 
-            print 'base changed to %.2f' % self.base_sf
+            print('base changed to %.2f' % self.base_sf)
 
     def plot(self):
         plots_data, labels = zip(*[(np.array(x), l) for (x, l)
