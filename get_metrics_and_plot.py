@@ -1,6 +1,7 @@
 import cv2
 import os
 import numpy as np
+from matplotlib import pyplot as plt
 
 def mse(src: np.ndarray, test: np.ndarray):
     rows, cols = src.shape[:2]
@@ -29,8 +30,8 @@ def ssim(src: np.ndarray, test: np.ndarray):
     denom = (mean_s**2 + mean_t**2 + c1)*(var_s + var_y + c2)
     return num/denom
 
-gt_dir = 'gt_data'
-test_dir = 'resize_results_zssr_sing_img'
+gt_dir = 'gt_data_sf4'
+test_dir = 'results_imresize_sf4'
 
 gt_files = os.listdir(gt_dir)
 gt_files.sort()
@@ -45,8 +46,18 @@ for gt, test_f in zip(gt_files, test_files):
     psnr_list.append(psnr(src, test))
     ssim_list.append(ssim(src, test))
 
-mean_psnr = np.mean(np.asarray(psnr_list))
-mean_ssim = np.mean(np.asarray(ssim_list))
 
+mean_psnr = np.mean(np.asarray(psnr_list)).item()
+mean_ssim = np.mean(np.asarray(ssim_list)).item()
 print('Mean PSNR / Mean SSIM : {} / {}'.format(mean_psnr, mean_ssim))
-np.save('{}_{}.npy'.format(gt_dir, test_dir), np.array([mean_psnr, mean_ssim]))
+
+fig = plt.figure()
+plt.plot(psnr_list)
+fig.suptitle('PSNR of each image with mean PSNR: {}'.format(mean_psnr))
+fig.savefig('{}_{}_psnr.png'.format(gt_dir, test_dir))
+
+fig = plt.figure()
+plt.plot(ssim_list)
+fig.suptitle('SSIM of each image with mean SSIM: {}'.format(mean_ssim))
+fig.savefig('{}_{}_ssim.png'.format(gt_dir, test_dir))
+
