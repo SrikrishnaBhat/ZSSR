@@ -6,6 +6,7 @@ import ZSSR
 
 def main(input_img, ground_truth, kernels, gpu, conf_str, results_path):
     # Choose the wanted GPU
+    gpu=0
     if gpu is not None:
         os.environ["CUDA_VISIBLE_DEVICES"] = '%s' % gpu
 
