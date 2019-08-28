@@ -1,7 +1,7 @@
 import cv2
 import os
 
-vid_id = '100445787'
+vid_id = 'summer'
 vid_src = '{}.mp4'.format(vid_id)
 print(vid_src)
 
