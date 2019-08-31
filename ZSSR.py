@@ -119,8 +119,11 @@ class ZSSR:
             # Save the final output if indicated
             if self.conf.save_results:
                 sf_str = ''.join('X%.2f' % s for s in self.conf.scale_factors[self.sf_ind])
+                save_dir = os.path.join(self.conf.result_path, 'pred_data')
+                if not os.path.exists(save_dir):
+                    os.makedirs(save_dir)
                 plt.imsave('%s/%s_zssr_%s.png' %
-                           (self.conf.result_path, os.path.basename(self.file_name)[:-4], sf_str),
+                           (save_dir, os.path.basename(self.file_name)[:-4], sf_str),
                            post_processed_output, vmin=0, vmax=1)
 
             # verbose
@@ -315,6 +318,11 @@ class ZSSR:
             # Display info and save weights
             if not self.iter % self.conf.display_every:
                 print('sf:', self.sf*self.base_sf, ', iteration: ', self.iter, ', loss: ', self.loss[self.iter])
+                if self.conf.save_loss:
+                    loss_dir = os.path.join(self.conf.result_path, 'loss')
+                    if not os.path.exists(loss_dir):
+                        os.makedirs(loss_dir)
+                    np.save(os.path.join(loss_dir, 'loss_%05d.npy' % (self.iter)), self.loss[self.iter])
 
             # Test network
             if self.conf.run_test and (not self.iter % self.conf.run_test_every):
