@@ -11,7 +11,7 @@ import argparse
 
 def main(args):
     conf_name = args.configs if args.configs != '' else None
-    gpu = args.gpu if argparse.gpu != '' else None
+    gpu = args.gpu if args.gpu != '' else None
     # Initialize configs and prepare result dir with date
     if conf_name is None:
         conf = configs.Config()
