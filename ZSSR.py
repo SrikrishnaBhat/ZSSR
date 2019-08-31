@@ -145,7 +145,7 @@ class ZSSR:
                     if not os.path.exists(save_dir):
                         os.makedirs(save_dir)
                     plt.imsave('%s/%s_zssr_%s.png' %
-                               (save_dir, os.path.basename(self.file_name_list[ind])[:-4], sf_str),
+                               (save_dir, os.path.basename(self.file_name_list[index + ind])[:-4], sf_str),
                                post_processed_output, vmin=0, vmax=1)
 
             # verbose
