@@ -4,7 +4,7 @@ import os
 class Config:
     # network meta params
     python_path = '/home/assafsho/PycharmProjects/network/venv/bin/python2.7'
-    scale_factors = [[2.0, 2.0]]  # list of pairs (vertical, horizontal) for gradual increments in resolution
+    scale_factors = [[1.0, 1.0]]  # list of pairs (vertical, horizontal) for gradual increments in resolution
     base_change_sfs = []  # list of scales after which the input is changed to be the output (recommended for high sfs)
     max_iters = 3000
     min_iters = 256
@@ -43,6 +43,7 @@ class Config:
     display_every = 20
     name = 'test'
     plot_losses = False
+    batch_size = 1
     result_path = os.path.dirname(__file__) + '/results'
     create_results_dir = True
     input_path = local_dir = os.path.dirname(__file__) + '/test_data'
