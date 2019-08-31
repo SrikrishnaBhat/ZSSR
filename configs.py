@@ -20,6 +20,7 @@ class Config:
     back_projection_iters = [10]  # for each scale num of bp iterations (same length as scale_factors)
     random_crop = True
     crop_size = 128
+    start_ind = 0
     noise_std = 0.0  # adding noise to lr-sons. small for real images, bigger for noisy images and zero for ideal case
     init_net_for_each_sf = False  # for gradual sr- should we optimize from the last sf or initialize each time?
 
@@ -43,6 +44,7 @@ class Config:
     display_every = 20
     name = 'test'
     plot_losses = False
+    batch_size = 1
     result_path = os.path.dirname(__file__) + '/results'
     create_results_dir = True
     input_path = local_dir = os.path.dirname(__file__) + '/test_data'

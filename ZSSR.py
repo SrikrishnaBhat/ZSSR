@@ -99,39 +99,41 @@ class ZSSR:
     def run(self):
         # Run gradually on all scale factors (if only one jump then this loop only happens once)
         self.kernels = self.kernels_list[0]
-        for self.sf_ind, (sf, self.kernel) in enumerate(zip(self.conf.scale_factors, self.kernels)):
-            for self.im_ind, input_img in enumerate(self.input_list):
-                # verbose
+        for i in range(self.conf.start_ind, len(self.input_list), self.conf.batch_size):
+            image_list = self.input_list[i:self.conf.batch_size]
+            for self.sf_ind, (sf, self.kernel) in enumerate(zip(self.conf.scale_factors, self.kernels)):
+                for self.im_ind, input_img in enumerate(image_list):
+                    # verbose
+                    self.input = input_img.copy()
+                    self.gt = self.gt_list[self.im_ind]
+                    self.hr_fathers_sources = [self.input]
+                    print('** Start training for sf={}, img_ind={} **'.format(sf, self.im_ind))
+
+                    # Relative_sf (used when base change is enabled. this is when input is the output of some previous scale)
+                    if np.isscalar(sf):
+                        sf = [sf, sf]
+                    self.sf = np.array(sf) / np.array(self.base_sf)
+                    self.output_shape = np.uint(np.ceil(np.array(self.input.shape[0:2]) * sf))
+
+                    # Initialize network
+                    self.init_sess(init_weights=self.conf.init_net_for_each_sf)
+
+                    # Train the network
+                    self.train()
+
+            for ind, input_img in enumerate(image_list):
+
+                # Use augmented outputs and back projection to enhance result. Also save the result.
                 self.input = input_img.copy()
-                self.gt = self.gt_list[self.im_ind]
-                self.hr_fathers_sources = [self.input]
-                print('** Start training for sf={}, img_ind={} **'.format(sf, self.im_ind))
 
-                # Relative_sf (used when base change is enabled. this is when input is the output of some previous scale)
-                if np.isscalar(sf):
-                    sf = [sf, sf]
-                self.sf = np.array(sf) / np.array(self.base_sf)
-                self.output_shape = np.uint(np.ceil(np.array(self.input.shape[0:2]) * sf))
+                post_processed_output = self.final_test()
 
-                # Initialize network
-                self.init_sess(init_weights=self.conf.init_net_for_each_sf)
+                # Keep the results for the next scale factors SR to use as dataset
+                # self.hr_fathers_sources.append(post_processed_output)
 
-                # Train the network
-                self.train()
-
-        for ind, input_img in enumerate(self.input_list):
-
-            # Use augmented outputs and back projection to enhance result. Also save the result.
-            self.input = input_img.copy()
-
-            post_processed_output = self.final_test()
-
-            # Keep the results for the next scale factors SR to use as dataset
-            # self.hr_fathers_sources.append(post_processed_output)
-
-            # In some cases, the current output becomes the new input. If indicated and if this is the right scale to
-            # become the new base input. all of these conditions are checked inside the function.
-            self.base_change()
+                # In some cases, the current output becomes the new input. If indicated and if this is the right scale to
+                # become the new base input. all of these conditions are checked inside the function.
+                self.base_change()
 
             # Save the final output if indicated
             if self.conf.save_results:

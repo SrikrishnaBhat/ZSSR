@@ -1,7 +1,7 @@
 import cv2
 import os
 
-vid_id = 'summer'
+vid_id = 'Saat_Ernte'
 vid_src = '{}.mp4'.format(vid_id)
 print(vid_src)
 
@@ -10,9 +10,10 @@ if not os.path.exists(vid_id):
 
 vid_ptr = cv2.VideoCapture(vid_src)
 count = 0
+limit = 900
 
 success, frame = vid_ptr.read()
-while success:
+while success & (count<limit):
     if count%5 == 0:
         frame_name = '%05d.png' % count
         print(success, frame_name)

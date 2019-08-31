@@ -6,16 +6,22 @@ import configs
 from time import sleep
 import sys
 import run_ZSSR_single_input
+import argparse
 
 
-def main(conf_name, gpu):
+def main(args):
+    conf_name = args.configs if args.configs != '' else None
+    gpu = args.gpu if argparse.gpu != '' else None
     # Initialize configs and prepare result dir with date
     if conf_name is None:
         conf = configs.Config()
     else:
         conf = None
         exec ('conf = configs.%s' % conf_name)
-
+    conf.batch_size = args.batch_size
+    conf.result_path = args.result_dir
+    conf.start_ind = args.start
+    conf.input_path = args.src
     res_dir = prepare_result_dir(conf)
     local_dir = os.path.dirname(__file__)
 
@@ -76,6 +82,15 @@ def main(conf_name, gpu):
 
 
 if __name__ == '__main__':
-    conf_str = sys.argv[1] if len(sys.argv) > 1 else None
-    gpu_str = sys.argv[2] if len(sys.argv) > 2 else None
-    main(conf_str, gpu_str)
+    parser = argparse.ArgumentParser(description='Program to run the ZSSR algorithm')
+    parser.add_argument('--configs', type=str, default='', help='path to config file')
+    parser.add_argument('--gpu', type=str, defaul='GPU device to be used')
+    parser.add_argument('--src', type=str, default='test_data')
+    parser.add_argument('-b', default=30, type=int, help='size of training batch', dest='batch_size')
+    parser.add_argument('-s', default='results', type=str, help='directory to store results', dest='save_path')
+    parser.add_argument('--start', default=0, type=str, help='batch number to re-start the predictions')
+    # conf_str = sys.argv[1] if len(sys.argv) > 1 else None
+    # gpu_str = sys.argv[2] if len(sys.argv) > 2 else None
+    args = parser.parse_args()
+    main(args)
+    # main(conf_str, gpu_str)

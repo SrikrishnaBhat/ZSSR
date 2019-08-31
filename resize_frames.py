@@ -17,10 +17,9 @@ def resize_frames(frame_dir, dest_dir, new_shape=(224, 224), dest_ext='.png'):
 
 
 if __name__ == '__main__':
-    frame_dir = sys.argv[1] if len(sys.argv) > 1 else 'Foam Roll Recovery Clips'
-    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'test_data'
+    frame_dir = sys.argv[1] if len(sys.argv) > 1 else 'some_russians_band'
+    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'test_data_some_russians_band'
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir)
 
     resize_frames(frame_dir, dest_dir)
-

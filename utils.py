@@ -190,7 +190,7 @@ def kernel_shift(kernel, sf):
 def prepare_result_dir(conf):
     # Create results directory
     if conf.create_results_dir:
-        conf.result_path += '/' + conf.name + strftime('_%b_%d_%H_%M_%S', localtime()) + '_video_training'
+        # conf.result_path += '/' + conf.name + strftime('_%b_%d_%H_%M_%S', localtime())
         os.makedirs(conf.result_path)
 
     # Put a copy of all *.py files in results path, to be able to reproduce experimental results
