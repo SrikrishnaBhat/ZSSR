@@ -22,6 +22,7 @@ def main(args):
     conf.result_path = args.save_path
     conf.start_ind = args.start
     conf.input_path = args.src
+    conf.depth = args.nlayers
     res_dir = prepare_result_dir(conf)
     local_dir = os.path.dirname(__file__)
 
@@ -88,7 +89,8 @@ if __name__ == '__main__':
     parser.add_argument('--src', type=str, default='test_data')
     parser.add_argument('-b', default=30, type=int, help='size of training batch', dest='batch_size')
     parser.add_argument('-s', default='results', type=str, help='directory to store results', dest='save_path')
-    parser.add_argument('--start', default=0, type=str, help='batch number to re-start the predictions')
+    parser.add_argument('--start', default=0, type=int, help='batch number to re-start the predictions')
+    parser.add_argument('--nlayers', default=8, type=int, help='number of layers in neural network')
     # conf_str = sys.argv[1] if len(sys.argv) > 1 else None
     # gpu_str = sys.argv[2] if len(sys.argv) > 2 else None
     args = parser.parse_args()
