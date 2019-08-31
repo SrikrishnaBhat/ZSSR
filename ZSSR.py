@@ -100,7 +100,8 @@ class ZSSR:
         # Run gradually on all scale factors (if only one jump then this loop only happens once)
         self.kernels = self.kernels_list[0]
         for self.conf.batch_ind in range(self.conf.start_ind, len(self.input_list), self.conf.batch_size):
-            image_list = self.input_list[i:self.conf.batch_size]
+            ind = self.conf.batch_ind
+            image_list = self.input_list[ind:ind+self.conf.batch_size]
             for self.sf_ind, (sf, self.kernel) in enumerate(zip(self.conf.scale_factors, self.kernels)):
                 for self.im_ind, input_img in enumerate(image_list):
                     # verbose
