@@ -45,6 +45,7 @@ class Config:
     name = 'test'
     plot_losses = False
     batch_size = 1
+    batch_ind = 0
     result_path = os.path.dirname(__file__) + '/results'
     create_results_dir = True
     input_path = local_dir = os.path.dirname(__file__) + '/test_data'

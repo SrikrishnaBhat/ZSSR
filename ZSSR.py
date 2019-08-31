@@ -99,7 +99,7 @@ class ZSSR:
     def run(self):
         # Run gradually on all scale factors (if only one jump then this loop only happens once)
         self.kernels = self.kernels_list[0]
-        for i in range(self.conf.start_ind, len(self.input_list), self.conf.batch_size):
+        for self.conf.batch_ind in range(self.conf.start_ind, len(self.input_list), self.conf.batch_size):
             image_list = self.input_list[i:self.conf.batch_size]
             for self.sf_ind, (sf, self.kernel) in enumerate(zip(self.conf.scale_factors, self.kernels)):
                 for self.im_ind, input_img in enumerate(image_list):
@@ -341,7 +341,7 @@ class ZSSR:
                     loss_dir = os.path.join(self.conf.result_path, 'loss')
                     if not os.path.exists(loss_dir):
                         os.makedirs(loss_dir)
-                    np.save(os.path.join(loss_dir, 'loss_%05d_%05d.npy' % (self.im_ind, self.iter)), self.loss[self.iter])
+                    np.save(os.path.join(loss_dir, 'loss_%05d_%05d_%05d.npy' % (self.conf.batch_ind, self.im_ind, self.iter)), self.loss[self.iter])
 
             # Test network
             if self.conf.run_test and (not self.iter % self.conf.run_test_every):
