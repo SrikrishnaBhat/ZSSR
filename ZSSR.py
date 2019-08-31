@@ -136,18 +136,18 @@ class ZSSR:
                 # become the new base input. all of these conditions are checked inside the function.
                 self.base_change()
 
-            # Save the final output if indicated
-            if self.conf.save_results:
-                sf_str = ''.join('X%.2f' % s for s in self.conf.scale_factors[self.sf_ind])
-                save_dir = os.path.join(self.conf.result_path, 'pred_data')
-                if not os.path.exists(save_dir):
-                    os.makedirs(save_dir)
-                plt.imsave('%s/%s_zssr_%s.png' %
-                           (save_dir, os.path.basename(self.file_name_list[ind])[:-4], sf_str),
-                           post_processed_output, vmin=0, vmax=1)
+                # Save the final output if indicated
+                if self.conf.save_results:
+                    sf_str = ''.join('X%.2f' % s for s in self.conf.scale_factors[self.sf_ind])
+                    save_dir = os.path.join(self.conf.result_path, 'pred_data')
+                    if not os.path.exists(save_dir):
+                        os.makedirs(save_dir)
+                    plt.imsave('%s/%s_zssr_%s.png' %
+                               (save_dir, os.path.basename(self.file_name_list[ind])[:-4], sf_str),
+                               post_processed_output, vmin=0, vmax=1)
 
             # verbose
-            print('** Done training for sf=', sf, ' **')
+            print('** Done training for batch=', self.conf.batch_ind, ' **')
 
         # Return the final post processed output.
         # noinspection PyUnboundLocalVariable
