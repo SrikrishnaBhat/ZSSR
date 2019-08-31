@@ -19,7 +19,7 @@ def main(args):
         conf = None
         exec ('conf = configs.%s' % conf_name)
     conf.batch_size = args.batch_size
-    conf.result_path = args.result_dir
+    conf.result_path = args.save_path
     conf.start_ind = args.start
     conf.input_path = args.src
     res_dir = prepare_result_dir(conf)
