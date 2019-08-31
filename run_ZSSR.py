@@ -84,7 +84,7 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Program to run the ZSSR algorithm')
     parser.add_argument('--configs', type=str, default='', help='path to config file')
-    parser.add_argument('--gpu', type=str, defaul='GPU device to be used')
+    parser.add_argument('--gpu', type=str, help='GPU device to be used', default='')
     parser.add_argument('--src', type=str, default='test_data')
     parser.add_argument('-b', default=30, type=int, help='size of training batch', dest='batch_size')
     parser.add_argument('-s', default='results', type=str, help='directory to store results', dest='save_path')
