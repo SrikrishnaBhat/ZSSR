@@ -4,7 +4,7 @@ import configs
 import ZSSR
 
 
-def main(input_img_list, ground_truth_list, kernels_list, gpu, conf_str, results_path):
+def main(input_img_list, ground_truth_list, kernels_list, gpu, conf_str, results_path, conf=None):
     # Choose the wanted GPU
     gpu=0
     if gpu is not None:
@@ -16,10 +16,11 @@ def main(input_img_list, ground_truth_list, kernels_list, gpu, conf_str, results
     kernels_list = [None if kernels == '0' else kernels.split(';')[:-1] for kernels in kernels_list]
 
     # Setup configuration and results directory
-    conf = configs.Config()
-    if conf_str is not None:
-        exec ('conf = configs.%s' % conf_str)
-    conf.result_path = results_path
+    if conf is None:
+        conf = configs.Config()
+        if conf_str is not None:
+            exec ('conf = configs.%s' % conf_str)
+        conf.result_path = results_path
 
     # Run ZSSR on the image
     net = ZSSR.ZSSR(input_img_list, conf, ground_truth_list, kernels_list)
