@@ -361,7 +361,7 @@ class ZSSR:
             if not self.iter % self.conf.save_every:
                 print('in save loss')
                 if self.conf.save_loss:
-                    print('in log saving')
+                    print('in log saving: {}'.format(self.logger.handlers[0].baseFilename))
                     self.logger.info(str(self.loss[self.iter]))
                     # np.save(os.path.join(loss_dir, 'loss_%05d_%05d_%05d.npy' % (self.conf.batch_ind, self.im_ind, self.iter)), self.loss[self.iter])
 
