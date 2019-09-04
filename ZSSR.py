@@ -112,7 +112,9 @@ class ZSSR:
             image_list = self.input_list[index:index+self.conf.batch_size]
             print('Image list length: {}'.format(len(image_list)))
             log_dir = self.assign_log_dir()
-            logging.basicConfig(filename=os.path.join(log_dir, 'set_ind_{}.log'.format(self.conf.batch_ind)),
+            log_file_name = os.path.join(log_dir, 'set_ind_{}.log'.format(self.conf.batch_ind))
+            print('Logging dir: {}'.format(log_file_name))
+            logging.basicConfig(filename=log_file_name,
                                 format='%(asctime)s|%(message)s',
                                 filemode='w',
                                 )
