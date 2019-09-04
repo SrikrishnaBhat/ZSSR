@@ -4,6 +4,7 @@ import matplotlib.image as img
 from matplotlib.gridspec import GridSpec
 from configs import Config
 from utils import *
+import logging
 
 
 class ZSSR:
@@ -83,6 +84,7 @@ class ZSSR:
 
         # Initialize network weights and meta parameters
         self.init_sess(init_weights=True)
+        self.logger = None
 
         # The first hr father source is the input (source goes through augmentation to become a father)
         # Later on, if we use gradual sr increments, results for intermediate scales will be added as sources.
@@ -96,6 +98,12 @@ class ZSSR:
         else:
             self.file_name_list = conf.name
 
+    def assign_log_dir(self):
+        log_dir = os.path.join(self.conf.result_path, 'loss')
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+        return log_dir
+
     def run(self):
         # Run gradually on all scale factors (if only one jump then this loop only happens once)
         self.kernels = self.kernels_list[0]
@@ -103,6 +111,13 @@ class ZSSR:
             index = self.conf.batch_ind
             image_list = self.input_list[index:index+self.conf.batch_size]
             print('Image list length: {}'.format(len(image_list)))
+            log_dir = self.assign_log_dir()
+            logging.basicConfig(filename=os.path.join(log_dir, 'set_ind_{}.log'.format(self.conf.batch_ind)),
+                                format='%(asctime)s, %(message)s',
+                                filemode='w',
+                                )
+            self.logger = logging.getLogger()
+            self.logger.setLevel(logging.INFO)
             for self.sf_ind, (sf, self.kernel) in enumerate(zip(self.conf.scale_factors, self.kernels)):
                 for self.im_ind, input_img in enumerate(image_list):
                     # verbose
@@ -344,7 +359,8 @@ class ZSSR:
                     loss_dir = os.path.join(self.conf.result_path, 'loss')
                     if not os.path.exists(loss_dir):
                         os.makedirs(loss_dir)
-                    np.save(os.path.join(loss_dir, 'loss_%05d_%05d_%05d.npy' % (self.conf.batch_ind, self.im_ind, self.iter)), self.loss[self.iter])
+                    self.logger.info(self.loss[self.iter])
+                    # np.save(os.path.join(loss_dir, 'loss_%05d_%05d_%05d.npy' % (self.conf.batch_ind, self.im_ind, self.iter)), self.loss[self.iter])
 
             # Test network
             if self.conf.run_test and (not self.iter % self.conf.run_test_every):

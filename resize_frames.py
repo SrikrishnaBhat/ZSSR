@@ -2,9 +2,10 @@ import cv2
 import os
 import sys
 
-def resize_frames(frame_dir, dest_dir, new_shape=(224, 224), dest_ext='.png'):
+def resize_frames(frame_dir, dest_dir, new_shape=(448, 448), dest_ext='.png'):
 
     frame_list = os.listdir(frame_dir)
+    # ref_list = os.listdir('test_data')
 
     for frame_image in frame_list:
         name, _ = os.path.splitext(frame_image)
@@ -17,8 +18,8 @@ def resize_frames(frame_dir, dest_dir, new_shape=(224, 224), dest_ext='.png'):
 
 
 if __name__ == '__main__':
-    frame_dir = sys.argv[1] if len(sys.argv) > 1 else 'some_russians_band'
-    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'test_data_some_russians_band'
+    frame_dir = sys.argv[1] if len(sys.argv) > 1 else 'test_data'
+    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'results_imresize_foam'
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir)
 
