@@ -359,11 +359,10 @@ class ZSSR:
                 print('sf:', self.sf*self.base_sf, ', iteration: ', self.iter, ', loss: ', self.loss[self.iter])
 
             if not self.iter % self.conf.save_every:
+                print('in save loss')
                 if self.conf.save_loss:
-                    loss_dir = os.path.join(self.conf.result_path, 'loss')
-                    if not os.path.exists(loss_dir):
-                        os.makedirs(loss_dir)
-                    self.logger.info(self.loss[self.iter])
+                    print('in log saving')
+                    self.logger.info(str(self.loss[self.iter]))
                     # np.save(os.path.join(loss_dir, 'loss_%05d_%05d_%05d.npy' % (self.conf.batch_ind, self.im_ind, self.iter)), self.loss[self.iter])
 
             # Test network
