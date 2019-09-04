@@ -355,6 +355,8 @@ class ZSSR:
             # Display info and save weights
             if not self.iter % self.conf.display_every:
                 print('sf:', self.sf*self.base_sf, ', iteration: ', self.iter, ', loss: ', self.loss[self.iter])
+
+            if not self.iter % self.conf.save_every:
                 if self.conf.save_loss:
                     loss_dir = os.path.join(self.conf.result_path, 'loss')
                     if not os.path.exists(loss_dir):
