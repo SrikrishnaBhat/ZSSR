@@ -332,7 +332,7 @@ class ZSSR:
                 print('in save loss')
                 if self.conf.save_loss:
                     print('in log saving: {}'.format(self.logger.handlers[0].baseFilename))
-                    self.logger.info(str(self.loss[self.iter]) + '|' + str(self.mse_rec[-1]))
+                    self.logger.info(str(self.iter) + '|' + str(self.loss[self.iter]) + '|' + str(self.mse_rec[-1]))
 
 
         # plot losses if needed
