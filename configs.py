@@ -43,6 +43,7 @@ class Config:
     run_test_every = 50
     display_every = 20
     save_every = 100
+    save_metric_every = 200
     name = 'test'
     plot_losses = False
     batch_size = 1

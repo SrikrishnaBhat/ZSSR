@@ -117,8 +117,7 @@ class ZSSR:
             print('Logging dir: {}'.format(log_file_name))
             logging.basicConfig(filename=log_file_name,
                                 format='%(asctime)s|%(message)s',
-                                filemode='w',
-                                )
+                                filemode='w')
             self.logger = logging.getLogger()
             self.logger.setLevel(logging.INFO)
             for self.sf_ind, (sf, self.kernel) in enumerate(zip(self.conf.scale_factors, self.kernels)):
@@ -329,6 +328,13 @@ class ZSSR:
             print('iteration: ', self.iter, 'reconstruct mse:', self.mse_rec[-1], ', true mse:', (self.mse[-1]
                                                                                                   if self.mse else None))
 
+            if not self.iter % self.conf.save_every:
+                print('in save loss')
+                if self.conf.save_loss:
+                    print('in log saving: {}'.format(self.logger.handlers[0].baseFilename))
+                    self.logger.info(str(self.loss[self.iter]) + '|' + str(self.mse_rec[-1]))
+
+
         # plot losses if needed
         if self.conf.plot_losses:
             self.plot()
@@ -358,12 +364,6 @@ class ZSSR:
             # Display info and save weights
             if not self.iter % self.conf.display_every:
                 print('sf:', self.sf*self.base_sf, ', iteration: ', self.iter, ', loss: ', self.loss[self.iter])
-
-            if not self.iter % self.conf.save_every:
-                print('in save loss')
-                if self.conf.save_loss:
-                    print('in log saving: {}'.format(self.logger.handlers[0].baseFilename))
-                    self.logger.info(str(self.loss[self.iter]))
                     # np.save(os.path.join(loss_dir, 'loss_%05d_%05d_%05d.npy' % (self.conf.batch_ind, self.im_ind, self.iter)), self.loss[self.iter])
 
             # Test network
