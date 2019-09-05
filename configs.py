@@ -62,6 +62,11 @@ class Config:
                              [[3, 3, self.width, self.width]] * (self.depth-2) +
                              [[3, 3, self.width, 3]])
 
+    def reinitialize_filters(self):
+        self.filter_shape = ([[3, 3, 3, self.width]] +
+                             [[3, 3, self.width, self.width]] * (self.depth-2) +
+                             [[3, 3, self.width, 3]])
+
 
 ########################################
 # Some pre-made useful example configs #

@@ -23,6 +23,7 @@ def main(args):
     conf.start_ind = args.start
     conf.input_path = args.src
     conf.depth = args.nlayers
+    conf.reinitialize_filters()
     res_dir = prepare_result_dir(conf)
     local_dir = os.path.dirname(__file__)
 
