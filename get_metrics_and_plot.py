@@ -10,7 +10,7 @@ def mse(src: np.ndarray, test: np.ndarray):
     return diff.sum()/(rows*cols)
 
 def psnr(src: np.ndarray, test: np.ndarray):
-    max_val = np.max(src)
+    max_val = 255#np.max(src)
     mse_val = mse(src, test)
     return (20 * np.log10(max_val).item() - 10*np.log10(mse_val))
 
@@ -30,8 +30,8 @@ def ssim(src: np.ndarray, test: np.ndarray):
     denom = (mean_s**2 + mean_t**2 + c1)*(var_s + var_y + c2)
     return num/denom
 
-gt_dir = 'gt_foam_recovery'
-test_dir = 'results_imresize_foam'
+gt_dir = 'gt_Saat_Ernte'
+test_dir = 'results_Saat_Ernte_sf4'
 
 gt_files = os.listdir(gt_dir)
 gt_files.sort()
