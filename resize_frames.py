@@ -15,7 +15,9 @@ def resize_frames(frame_dir, dest_dir, new_shape=None, dest_ext='.png', sf=None)
         fimg = cv2.imread(frame_path)
         if sf is not None:
             old_shape = fimg.shape[:2]
+            print(old_shape)
             new_shape = (int(old_shape[0]/2), int(old_shape[1]/2))
+            print(new_shape)
         dimg = cv2.resize(fimg, new_shape)
         cv2.imwrite(dest_path, dimg)
 

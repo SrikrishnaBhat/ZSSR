@@ -30,8 +30,8 @@ def ssim(src: np.ndarray, test: np.ndarray):
     denom = (mean_s**2 + mean_t**2 + c1)*(var_s + var_y + c2)
     return num/denom
 
-gt_dir = 'gt_Saat_Ernte'
-test_dir = 'results_Saat_Ernte_sf4'
+gt_dir = 'set14'
+test_dir = 'results_set14_imresize'
 
 gt_files = os.listdir(gt_dir)
 gt_files.sort()
