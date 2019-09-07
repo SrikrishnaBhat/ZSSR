@@ -6,6 +6,7 @@ def resize_frames(frame_dir, dest_dir, new_shape=None, dest_ext='.png', sf=None)
 
     frame_list = os.listdir(frame_dir)
     # ref_list = os.listdir('test_data')
+    frame_list.sort()
 
     for frame_image in frame_list:
         name, _ = os.path.splitext(frame_image)
@@ -15,10 +16,9 @@ def resize_frames(frame_dir, dest_dir, new_shape=None, dest_ext='.png', sf=None)
         fimg = cv2.imread(frame_path)
         if sf is not None:
             old_shape = fimg.shape[:2]
-            print(old_shape)
-            new_shape = (int(old_shape[0]/2), int(old_shape[1]/2))
-            print(new_shape)
+            new_shape = (int(old_shape[1]/2), int(old_shape[0]/2))
         dimg = cv2.resize(fimg, new_shape)
+        print('dimg shape: {}'.format(dimg.shape))
         cv2.imwrite(dest_path, dimg)
 
 
