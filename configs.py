@@ -18,7 +18,8 @@ class Config:
     downscale_gt_method = 'cubic'  # when ground-truth given and intermediate scales tested, we shrink gt to wanted size
     learn_residual = True  # when true, we only learn the residual from base interpolation
     init_variance = 0.1  # variance of weight initializations, typically smaller when residual learning is on
-    back_projection_iters = [10]  # for each scale num of bp iterations (same length as scale_factors)
+    # back_projection_iters = [10]  # for each scale num of bp iterations (same length as scale_factors)
+    back_projection_iters = [6, 6, 8, 10, 10, 12]
     random_crop = True
     crop_size = 128
     start_ind = 0
