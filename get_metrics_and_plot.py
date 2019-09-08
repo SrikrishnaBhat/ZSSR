@@ -30,8 +30,8 @@ def ssim(src: np.ndarray, test: np.ndarray):
     denom = (mean_s**2 + mean_t**2 + c1)*(var_s + var_y + c2)
     return num/denom
 
-gt_dir = 'set14'
-test_dir = 'results_set14_imresize'
+gt_dir = 'gt_BSD100'
+test_dir = 'results_BSD100_resize_noisy'
 
 gt_files = os.listdir(gt_dir)
 gt_files.sort()
@@ -40,11 +40,16 @@ test_files.sort()
 
 psnr_list, ssim_list = [], []
 for gt, test_f in zip(gt_files, test_files):
-    src = cv2.imread(os.path.join(gt_dir, gt))
-    test = cv2.imread(os.path.join(test_dir, test_f))
+    try:
+        src = cv2.imread(os.path.join(gt_dir, gt))
+        test = cv2.imread(os.path.join(test_dir, test_f))
 
-    psnr_list.append(psnr(src, test))
-    ssim_list.append(ssim(src, test))
+        psnr_list.append(psnr(src, test))
+        ssim_list.append(ssim(src, test))
+    except Exception as ex:
+        print(ex)
+        print(gt)
+        continue
 
 
 mean_psnr = np.mean(np.asarray(psnr_list)).item()
