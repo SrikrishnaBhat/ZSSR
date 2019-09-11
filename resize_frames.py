@@ -33,8 +33,7 @@ def resize_frames(frame_dir, dest_dir, new_shape=None, dest_ext='.png', sf=None,
         old_shape = fimg.shape[:2]
         if sf is not None:
             new_shape = (int(old_shape[1]/sf[1]), int(old_shape[0]/sf[0]))
-        # elif new_shape is None:
-        else:
+        elif new_shape is None:
             new_shape = [old_shape[1], old_shape[0]]
             if old_shape[0]%10 == 1:
                 new_shape[1] -= 1
@@ -50,10 +49,18 @@ def resize_frames(frame_dir, dest_dir, new_shape=None, dest_ext='.png', sf=None,
 
 
 if __name__ == '__main__':
-    frame_dir = sys.argv[1] if len(sys.argv) > 1 else 'BSD100'
-    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'gt_BSD100_noisy'
+    frame_set_dir = sys.argv[1] if len(sys.argv) > 1 else 'videos/Le Cerf Volant/frames'
+    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'videos/Le Cerf Volant/resized_frames'
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir)
 
-    sf = [0.5, 0.5]
-    resize_frames(frame_dir, dest_dir, sf=sf)
+    sf = [4.0, 4.0]
+    scene_list = os.listdir(frame_set_dir)
+    scene_list.sort()
+    for i, scene in enumerate(scene_list):
+        print(scene)
+        scene_src_dir = os.path.join(frame_set_dir, scene)
+        scene_dest_dir = os.path.join(dest_dir, scene)
+        if not os.path.exists(scene_dest_dir):
+            os.makedirs(scene_dest_dir)
+        resize_frames(scene_src_dir, scene_dest_dir, sf=sf)

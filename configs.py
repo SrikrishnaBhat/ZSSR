@@ -4,8 +4,8 @@ import os
 class Config:
     # network meta params
     python_path = '/home/assafsho/PycharmProjects/network/venv/bin/python2.7'
-    # scale_factors = [[2.0, 2.0]]  # list of pairs (vertical, horizontal) for gradual increments in resolution
-    scale_factors = [[1.0, 1.5], [1.5, 1.0], [1.5, 1.5], [1.5, 2.0], [2.0, 1.5], [2.0, 2.0]]
+    scale_factors = [[2.0, 2.0]]  # list of pairs (vertical, horizontal) for gradual increments in resolution
+    # scale_factors = [[1.0, 1.5], [1.5, 1.0], [1.5, 1.5], [1.5, 2.0], [2.0, 1.5], [2.0, 2.0]]
     base_change_sfs = []  # list of scales after which the input is changed to be the output (recommended for high sfs)
     max_iters = 3000
     min_iters = 256
@@ -18,8 +18,8 @@ class Config:
     downscale_gt_method = 'cubic'  # when ground-truth given and intermediate scales tested, we shrink gt to wanted size
     learn_residual = True  # when true, we only learn the residual from base interpolation
     init_variance = 0.1  # variance of weight initializations, typically smaller when residual learning is on
-    # back_projection_iters = [10]  # for each scale num of bp iterations (same length as scale_factors)
-    back_projection_iters = [6, 6, 8, 10, 10, 12]
+    back_projection_iters = [10]  # for each scale num of bp iterations (same length as scale_factors)
+    # back_projection_iters = [6, 6, 8, 10, 10, 12]
     random_crop = True
     crop_size = 128
     start_ind = 0
