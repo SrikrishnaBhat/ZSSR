@@ -27,7 +27,8 @@ def main(args):
 
     # We take all png files that are not ground truth
     scene_list = os.listdir(args.src)
-    for scene in scene_list:
+    for i in range(args.start, len(scene_list)):
+        scene = scene_list[i]
         conf.input_path = os.path.join(args.src, scene)
         conf.result_path = os.path.join(args.save_path, scene)
         files = [file_path for file_path in glob.glob('%s/*.png' % conf.input_path)
