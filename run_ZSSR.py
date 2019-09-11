@@ -27,6 +27,7 @@ def main(args):
 
     # We take all png files that are not ground truth
     scene_list = os.listdir(args.src)
+    scene_list.sort()
     for i in range(args.start, len(scene_list)):
         scene = scene_list[i]
         conf.input_path = os.path.join(args.src, scene)
