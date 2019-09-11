@@ -107,67 +107,67 @@ class ZSSR:
     def run(self):
         # Run gradually on all scale factors (if only one jump then this loop only happens once)
         self.kernels = self.kernels_list[0]
-        for self.conf.batch_ind in range(self.conf.start_ind, len(self.input_list), self.conf.batch_size):
-            index = self.conf.batch_ind
-            image_list = self.input_list[index:index+self.conf.batch_size]
-            print('Image list length: {}'.format(len(image_list)))
-            log_dir = self.assign_log_dir()
-            log_file_name = os.path.join(log_dir, 'set_ind_{}.log'.format(self.conf.batch_ind))
-            logging.getLogger().handlers = []
-            print('Logging dir: {}'.format(log_file_name))
-            logging.basicConfig(filename=log_file_name,
-                                format='%(asctime)s|%(message)s',
-                                filemode='w')
-            self.logger = logging.getLogger()
-            self.logger.setLevel(logging.INFO)
-            for self.sf_ind, (sf, self.kernel) in enumerate(zip(self.conf.scale_factors, self.kernels)):
-                for self.im_ind, input_img in enumerate(image_list):
-                    # verbose
-                    self.input = input_img.copy()
-                    self.gt = self.gt_list[self.im_ind]
-                    self.hr_fathers_sources = [self.input]
-                    print('** Start training for sf={}, img_ind={} **'.format(sf, self.im_ind))
-
-                    # Relative_sf (used when base change is enabled. this is when input is the output of some previous scale)
-                    if np.isscalar(sf):
-                        sf = [sf, sf]
-                    self.sf = np.array(sf) / np.array(self.base_sf)
-                    self.output_shape = np.uint(np.ceil(np.array(self.input.shape[0:2]) * sf))
-
-                    # Initialize network
-                    self.init_sess(init_weights=self.conf.init_net_for_each_sf)
-
-                    # Train the network
-                    self.train()
-
-            for ind, input_img in enumerate(image_list):
-
-                # Use augmented outputs and back projection to enhance result. Also save the result.
-                print('Input image shape: {}'.format(input_img.shape))
+        # for self.conf.batch_ind in range(self.conf.start_ind, len(self.input_list), self.conf.batch_size):
+        index = self.conf.batch_ind
+        image_list = self.input_list[index:]
+        print('Image list length: {}'.format(len(image_list)))
+        log_dir = self.assign_log_dir()
+        log_file_name = os.path.join(log_dir, 'set_ind_{}.log'.format(self.conf.batch_ind))
+        logging.getLogger().handlers = []
+        print('Logging dir: {}'.format(log_file_name))
+        logging.basicConfig(filename=log_file_name,
+                            format='%(asctime)s|%(message)s',
+                            filemode='w')
+        self.logger = logging.getLogger()
+        self.logger.setLevel(logging.INFO)
+        for self.sf_ind, (sf, self.kernel) in enumerate(zip(self.conf.scale_factors, self.kernels)):
+            for self.im_ind, input_img in enumerate(image_list):
+                # verbose
                 self.input = input_img.copy()
+                self.gt = self.gt_list[self.im_ind]
+                self.hr_fathers_sources = [self.input]
+                print('** Start training for sf={}, img_ind={} **'.format(sf, self.im_ind))
 
-                post_processed_output = self.final_test()
+                # Relative_sf (used when base change is enabled. this is when input is the output of some previous scale)
+                if np.isscalar(sf):
+                    sf = [sf, sf]
+                self.sf = np.array(sf) / np.array(self.base_sf)
+                self.output_shape = np.uint(np.ceil(np.array(self.input.shape[0:2]) * sf))
 
-                # Keep the results for the next scale factors SR to use as dataset
-                # self.hr_fathers_sources.append(post_processed_output)
+                # Initialize network
+                self.init_sess(init_weights=self.conf.init_net_for_each_sf)
 
-                # In some cases, the current output becomes the new input. If indicated and if this is the right scale to
-                # become the new base input. all of these conditions are checked inside the function.
-                self.base_change()
-                print('Output image shape: {}'.format(post_processed_output.shape))
+                # Train the network
+                self.train()
 
-                # Save the final output if indicated
-                if self.conf.save_results:
-                    sf_str = ''.join('X%.2f' % s for s in self.conf.scale_factors[self.sf_ind])
-                    save_dir = os.path.join(self.conf.result_path, 'pred_data')
-                    if not os.path.exists(save_dir):
-                        os.makedirs(save_dir)
-                    plt.imsave('%s/%s_zssr_%s.png' %
-                               (save_dir, os.path.basename(self.file_name_list[index + ind])[:-4], sf_str),
-                               post_processed_output, vmin=0, vmax=1)
+        for ind, input_img in enumerate(image_list):
 
-            # verbose
-            print('** Done training for batch=', self.conf.batch_ind, ' **')
+            # Use augmented outputs and back projection to enhance result. Also save the result.
+            print('Input image shape: {}'.format(input_img.shape))
+            self.input = input_img.copy()
+
+            post_processed_output = self.final_test()
+
+            # Keep the results for the next scale factors SR to use as dataset
+            # self.hr_fathers_sources.append(post_processed_output)
+
+            # In some cases, the current output becomes the new input. If indicated and if this is the right scale to
+            # become the new base input. all of these conditions are checked inside the function.
+            self.base_change()
+            print('Output image shape: {}'.format(post_processed_output.shape))
+
+            # Save the final output if indicated
+            if self.conf.save_results:
+                sf_str = ''.join('X%.2f' % s for s in self.conf.scale_factors[self.sf_ind])
+                save_dir = os.path.join(self.conf.result_path, 'pred_data')
+                if not os.path.exists(save_dir):
+                    os.makedirs(save_dir)
+                plt.imsave('%s/%s_zssr_%s.png' %
+                           (save_dir, os.path.basename(self.file_name_list[index + ind])[:-4], sf_str),
+                           post_processed_output, vmin=0, vmax=1)
+
+        # verbose
+        print('** Done training for batch=', self.conf.batch_ind, ' **')
 
         # Return the final post processed output.
         # noinspection PyUnboundLocalVariable
