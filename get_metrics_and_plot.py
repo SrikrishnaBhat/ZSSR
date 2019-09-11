@@ -10,7 +10,7 @@ def mse(src: np.ndarray, test: np.ndarray):
     return diff.sum()/(rows*cols)
 
 def psnr(src: np.ndarray, test: np.ndarray):
-    max_val = 255#np.max(src)
+    max_val = np.max(test)
     mse_val = mse(src, test)
     return (20 * np.log10(max_val).item() - 10*np.log10(mse_val))
 
@@ -30,7 +30,7 @@ def ssim(src: np.ndarray, test: np.ndarray):
     denom = (mean_s**2 + mean_t**2 + c1)*(var_s + var_y + c2)
     return num/denom
 
-gt_dir = 'gt_BSD100'
+gt_dir = 'gt_BSD100_noisy'
 test_dir = 'results_BSD100_resize_noisy'
 
 gt_files = os.listdir(gt_dir)
@@ -52,17 +52,21 @@ for gt, test_f in zip(gt_files, test_files):
         continue
 
 
-mean_psnr = np.mean(np.asarray(psnr_list)).item()
-mean_ssim = np.mean(np.asarray(ssim_list)).item()
+mean_psnr = np.mean(np.asarray(psnr_list).flatten()).item()
+mean_ssim = np.mean(np.asarray(ssim_list).flatten()).item()
 print('Mean PSNR / Mean SSIM : {} / {}'.format(mean_psnr, mean_ssim))
 
 fig = plt.figure()
-plt.plot(psnr_list)
+ax = plt.subplot(111)
+ax.plot(psnr_list)
+ax.set_ylim([0, 50])
 fig.suptitle('PSNR of each image with mean PSNR: {}'.format(mean_psnr))
 fig.savefig('{}_{}_psnr.png'.format(gt_dir, test_dir))
 
 fig = plt.figure()
+ax = plt.subplot(111)
 plt.plot(ssim_list)
+ax.set_ylim([-1, 1])
 fig.suptitle('SSIM of each image with mean SSIM: {}'.format(mean_ssim))
 fig.savefig('{}_{}_ssim.png'.format(gt_dir, test_dir))
 

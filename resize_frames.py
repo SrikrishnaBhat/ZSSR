@@ -51,7 +51,7 @@ def resize_frames(frame_dir, dest_dir, new_shape=None, dest_ext='.png', sf=None,
 
 if __name__ == '__main__':
     frame_dir = sys.argv[1] if len(sys.argv) > 1 else 'BSD100'
-    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'results_BSD100_resize_noisy'
+    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'gt_BSD100_noisy'
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir)
 
