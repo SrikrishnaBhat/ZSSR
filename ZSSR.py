@@ -140,31 +140,31 @@ class ZSSR:
                 # Train the network
                 self.train()
 
-        for ind, input_img in enumerate(image_list):
+#         for ind, input_img in enumerate(image_list):
 
-            # Use augmented outputs and back projection to enhance result. Also save the result.
-            print('Input image shape: {}'.format(input_img.shape))
-            self.input = input_img.copy()
+                # Use augmented outputs and back projection to enhance result. Also save the result.
+                print('Input image shape: {}'.format(input_img.shape))
+                self.input = input_img.copy()
 
-            post_processed_output = self.final_test()
+                post_processed_output = self.final_test()
 
-            # Keep the results for the next scale factors SR to use as dataset
-            # self.hr_fathers_sources.append(post_processed_output)
+                # Keep the results for the next scale factors SR to use as dataset
+                # self.hr_fathers_sources.append(post_processed_output)
 
-            # In some cases, the current output becomes the new input. If indicated and if this is the right scale to
-            # become the new base input. all of these conditions are checked inside the function.
-            self.base_change()
-            print('Output image shape: {}'.format(post_processed_output.shape))
+                # In some cases, the current output becomes the new input. If indicated and if this is the right scale to
+                # become the new base input. all of these conditions are checked inside the function.
+                self.base_change()
+                print('Output image shape: {}'.format(post_processed_output.shape))
 
-            # Save the final output if indicated
-            if self.conf.save_results:
-                sf_str = ''.join('X%.2f' % s for s in self.conf.scale_factors[self.sf_ind])
-                save_dir = os.path.join(self.conf.result_path, 'pred_data')
-                if not os.path.exists(save_dir):
-                    os.makedirs(save_dir)
-                plt.imsave('%s/%s_zssr_%s.png' %
-                           (save_dir, os.path.basename(self.file_name_list[index + ind])[:-4], sf_str),
-                           post_processed_output, vmin=0, vmax=1)
+                # Save the final output if indicated
+                if self.conf.save_results:
+                    sf_str = ''.join('X%.2f' % s for s in self.conf.scale_factors[self.sf_ind])
+                    save_dir = os.path.join(self.conf.result_path, 'pred_data')
+                    if not os.path.exists(save_dir):
+                        os.makedirs(save_dir)
+                    plt.imsave('%s/%s_zssr_%s.png' %
+                               (save_dir, os.path.basename(self.file_name_list[index + ind])[:-4], sf_str),
+                               post_processed_output, vmin=0, vmax=1)
 
         # verbose
         print('** Done training for batch=', self.conf.batch_ind, ' **')
