@@ -22,7 +22,7 @@ def resize_frames(frame_dir, dest_dir, new_shape=None, dest_ext='.png', sf=None,
 
     frame_list = os.listdir(frame_dir)
     # ref_list = os.listdir('test_data')
-    frame_list.sort()
+    # frame_list.sort()
 
     for index, frame_image in enumerate(frame_list):
         if index > 30:
@@ -52,10 +52,10 @@ def resize_frames(frame_dir, dest_dir, new_shape=None, dest_ext='.png', sf=None,
 
 
 if __name__ == '__main__':
-    frame_dir = sys.argv[1] if len(sys.argv) > 1 else 'BSD300/images/test'
-    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'BSD100'
+    frame_dir = sys.argv[1] if len(sys.argv) > 1 else 'BSDS300/images/test'
+    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'BSD30'
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir)
 
-    sf = [0.5, 0.5]
+    sf = [2.0, 2.0]
     resize_frames(frame_dir, dest_dir, sf=sf)
