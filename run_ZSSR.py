@@ -6,7 +6,6 @@ import configs
 from time import sleep
 import sys
 import run_ZSSR_single_input
-import argparse
 
 
 def main(conf_name, gpu):

@@ -43,14 +43,12 @@ class Config:
     display_every = 20
     name = 'test'
     plot_losses = False
-    batch_size = 1
     result_path = os.path.dirname(__file__) + '/results'
     create_results_dir = True
     input_path = local_dir = os.path.dirname(__file__) + '/test_data'
     create_code_copy = False  # save a copy of the code in the results folder to easily match code changes to results
     display_test_results = True
     save_results = True
-    save_loss = False
 
     def __init__(self):
         # network meta params that by default are determined (by other params) by other params but can be changed
