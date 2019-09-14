@@ -49,8 +49,8 @@ def resize_frames(frame_dir, dest_dir, new_shape=None, dest_ext='.png', sf=None,
 
 
 if __name__ == '__main__':
-    frame_set_dir = sys.argv[1] if len(sys.argv) > 1 else 'videos/Le Cerf Volant/frames'
-    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'videos/Le Cerf Volant/resized_frames'
+    frame_set_dir = sys.argv[1] if len(sys.argv) > 1 else 'videos/signal_fire_productions/frames'
+    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'videos/signal_fire_productions/resized_frames'
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir)
 

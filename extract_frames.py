@@ -1,8 +1,8 @@
 import cv2
 import os
 
-video_set_dir = 'videos/Le Cerf Volant/split'
-dest_dir = 'videos/Le Cerf Volant/frames'
+video_set_dir = 'videos/signal_fire_productions/split'
+dest_dir = 'videos/signal_fire_productions/frames'
 
 if not os.path.exists(dest_dir):
     os.makedirs(dest_dir)
