@@ -9,17 +9,13 @@ import run_ZSSR_single_input
 import argparse
 
 
-def main(args):
-    conf_name = args.configs if args.configs != '' else None
-    gpu = args.gpu if argparse.gpu != '' else None
+def main(conf_name, gpu):
     # Initialize configs and prepare result dir with date
     if conf_name is None:
         conf = configs.Config()
     else:
         conf = None
         exec ('conf = configs.%s' % conf_name)
-    conf.batch_size = args.batch_size
-    conf.result_path = args.result_dir
     res_dir = prepare_result_dir(conf)
     local_dir = os.path.dirname(__file__)
 
@@ -27,7 +23,7 @@ def main(args):
     files = [file_path for file_path in glob.glob('%s/*.png' % conf.input_path)
              if not file_path[-7:-4] == '_gt']
 
-    # Loop over all the bsd_001.pngfiles
+    # Loop over all the files
     for file_ind, input_file in enumerate(files):
 
         # Ground-truth file needs to be like the input file with _gt (if exists)
@@ -75,13 +71,6 @@ def main(args):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Program to run the ZSSR algorithm')
-    parser.add_argument('--configs', type=str, default='', help='path to config file')
-    parser.add_argument('--gpu', type=str, defaul='GPU device to be used')
-    parser.add_argument('-b', default=30, type=int, help='size of training batch', dest='batch_size')
-    parser.add_argument('-s', default='results', type=str, help='directory to store results', dest='save_path')
-    # conf_str = sys.argv[1] if len(sys.argv) > 1 else None
-    # gpu_str = sys.argv[2] if len(sys.argv) > 2 else None
-    args = parser.parse_args()
-    main(args)
-    # main(conf_str, gpu_str)
+    conf_str = sys.argv[1] if len(sys.argv) > 1 else None
+    gpu_str = sys.argv[2] if len(sys.argv) > 2 else None
+    main(conf_str, gpu_str)
