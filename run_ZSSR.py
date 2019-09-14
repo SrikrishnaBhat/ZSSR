@@ -6,6 +6,7 @@ import configs
 from time import sleep
 import sys
 import run_ZSSR_single_input
+from importlib import import_module
 import argparse
 
 
@@ -16,8 +17,9 @@ def main(args):
     if conf_name is None:
         conf = configs.Config()
     else:
-        conf = None
-        exec ('conf = configs.%s' % conf_name)
+        # conf = None
+        # exec ('conf = configs.%s' % conf_name)
+        conf = getattr(import_module('configs'), conf_name)
     conf.batch_size = args.batch_size
     conf.result_path = args.save_path
     conf.start_ind = args.start

@@ -24,7 +24,9 @@ def resize_frames(frame_dir, dest_dir, new_shape=None, dest_ext='.png', sf=None,
     # ref_list = os.listdir('test_data')
     frame_list.sort()
 
-    for frame_image in frame_list:
+    for index, frame_image in enumerate(frame_list):
+        if index > 30:
+            break
         name, _ = os.path.splitext(frame_image)
         frame_path = os.path.join(frame_dir, frame_image)
         dest_path = os.path.join(dest_dir, name + dest_ext)
@@ -50,8 +52,8 @@ def resize_frames(frame_dir, dest_dir, new_shape=None, dest_ext='.png', sf=None,
 
 
 if __name__ == '__main__':
-    frame_dir = sys.argv[1] if len(sys.argv) > 1 else 'BSD100'
-    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'results_BSD100_resize_noisy'
+    frame_dir = sys.argv[1] if len(sys.argv) > 1 else 'BSD300/images/test'
+    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'BSD100'
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir)
 
