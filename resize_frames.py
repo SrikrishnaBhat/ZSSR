@@ -49,12 +49,12 @@ def resize_frames(frame_dir, dest_dir, new_shape=None, dest_ext='.png', sf=None,
 
 
 if __name__ == '__main__':
-    frame_set_dir = sys.argv[1] if len(sys.argv) > 1 else 'videos/signal_fire_productions/frames'
-    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'videos/signal_fire_productions/resized_frames'
+    frame_set_dir = sys.argv[1] if len(sys.argv) > 1 else 'videos/signal_fire_productions/signal_fire_productions_resized_frames'
+    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'videos/signal_fire_productions/results_imresize'
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir)
 
-    sf = [4.0, 4.0]
+    sf = [0.5, 0.5]
     scene_list = os.listdir(frame_set_dir)
     scene_list.sort()
     for i, scene in enumerate(scene_list):
