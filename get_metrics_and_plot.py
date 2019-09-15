@@ -4,10 +4,10 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 def mse(src: np.ndarray, test: np.ndarray):
-    rows, cols = src.shape[:2]
+    # rows, cols = src.shape[:2]
 
     diff = (src-test) ** 2
-    return diff.sum()/(rows*cols)
+    return np.mean(diff).item()
 
 def psnr(src: np.ndarray, test: np.ndarray):
     max_val = np.max(test)
@@ -31,7 +31,7 @@ def ssim(src: np.ndarray, test: np.ndarray):
     return num/denom
 
 gt_dir = 'videos/headnshoulders/frames_gt'
-test_dir = 'videos/headnshoulders/results_imresize'
+test_dir = 'results_headnshoulders_b1_sf2'
 
 gt_scenes = os.listdir(gt_dir)
 gt_scenes.sort()
@@ -44,7 +44,7 @@ for gt_scene, test_f_scene in zip(gt_scenes, test_scenes):
     gt_scene_path = os.path.join(gt_dir, gt_scene)
     gt_files_list = os.listdir(gt_scene_path)
     gt_files_list.sort()
-    test_scene_path = os.path.join(test_dir, test_f_scene)
+    test_scene_path = os.path.join(test_dir, test_f_scene, 'pred_data')
     test_files_list = os.listdir(test_scene_path)
     test_files_list.sort()
     for (gt, test_f) in zip(gt_files_list, test_files_list):
