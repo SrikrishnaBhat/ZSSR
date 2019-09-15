@@ -82,7 +82,7 @@ def main(args):
     #
     # # The other option is just to run sequentially on a chosen GPU.
     # else:
-    run_ZSSR_single_input.main(files, ground_truth_file_list, kernel_files_str_list, gpu, conf_name, res_dir, conf)
+        run_ZSSR_single_input.main([input_file], ground_truth_file_list, kernel_files_str_list, gpu, conf_name, res_dir, conf)
 
 
 if __name__ == '__main__':
