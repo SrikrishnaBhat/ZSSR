@@ -12,7 +12,7 @@ def mse(src: np.ndarray, test: np.ndarray):
 def psnr(src: np.ndarray, test: np.ndarray):
     max_val = 255#np.max(src)
     mse_val = mse(src, test)
-    return (20 * np.log10(max_val).item() - 10*np.log10(mse_val))
+    return (20 * np.log10(max_val) - 10*np.log10(mse_val)).item()
 
 def ssim(src: np.ndarray, test: np.ndarray):
     mean_s = np.mean(src)
@@ -30,8 +30,8 @@ def ssim(src: np.ndarray, test: np.ndarray):
     denom = (mean_s**2 + mean_t**2 + c1)*(var_s + var_y + c2)
     return num/denom
 
-gt_dir = 'gt_BSD100'
-test_dir = 'results_BSD100_resize_noisy'
+gt_dir = 'BSD30_gt'
+test_dir = 'BSD30_imresize'
 
 gt_files = os.listdir(gt_dir)
 gt_files.sort()
@@ -43,9 +43,10 @@ for gt, test_f in zip(gt_files, test_files):
     try:
         src = cv2.imread(os.path.join(gt_dir, gt))
         test = cv2.imread(os.path.join(test_dir, test_f))
+        test_shape = test.shape
 
-        psnr_list.append(psnr(src, test))
-        ssim_list.append(ssim(src, test))
+        psnr_list.append(psnr(cv2.resize(src, (test_shape[1], test_shape[0])), test))
+        ssim_list.append(ssim(cv2.resize(src, (test_shape[1], test_shape[0])), test))
     except Exception as ex:
         print(ex)
         print(gt)

@@ -52,10 +52,10 @@ def resize_frames(frame_dir, dest_dir, new_shape=None, dest_ext='.png', sf=None,
 
 
 if __name__ == '__main__':
-    frame_dir = sys.argv[1] if len(sys.argv) > 1 else 'BSDS300/images/test'
-    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'BSD30'
+    frame_dir = sys.argv[1] if len(sys.argv) > 1 else 'BSD30'
+    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'BSD30_imresize'
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir)
 
-    sf = [2.0, 2.0]
+    sf = [0.5, 0.5]
     resize_frames(frame_dir, dest_dir, sf=sf)
