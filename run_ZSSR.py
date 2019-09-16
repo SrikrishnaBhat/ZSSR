@@ -22,7 +22,7 @@ def main(args):
         conf = getattr(import_module('configs'), conf_name)
     conf.batch_size = args.batch_size
     conf.result_path = args.save_path
-    conf.start_ind = args.start
+    conf.start_ind = 0 #args.start
     conf.input_path = args.src
     conf.depth = args.nlayers
     conf.reinitialize_filters()
@@ -36,8 +36,11 @@ def main(args):
 
     # Loop over all the bsd_001.pngfiles
     kernel_files_str_list, ground_truth_file_list = [], []
-    for file_ind, input_file in enumerate(files):
-
+    start_ind = args.start
+#     for file_ind, input_file in enumerate(files):
+    for file_ind in range(start_ind, len(files)):
+        input_file = files[file_ind]
+        print('File index: {}'.format(file_ind))
         # Ground-truth file needs to be like the input file with _gt (if exists)
         ground_truth_file = input_file[:-4] + '_gt.png'
         if not os.path.isfile(ground_truth_file):
