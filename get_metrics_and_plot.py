@@ -34,7 +34,7 @@ def ssim(src: np.ndarray, test: np.ndarray):
     return num/denom
 
 gt_dir = 'set14'
-test_dir = 'set14_sing'
+test_dir = 'results_set14_src_gradual_reinit'
 
 gt_files = os.listdir(gt_dir)
 gt_files.sort()
