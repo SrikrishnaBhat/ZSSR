@@ -3,6 +3,9 @@ import os
 import numpy as np
 from matplotlib import pyplot as plt
 
+from imresize import imresize
+
+
 def mse(src: np.ndarray, test: np.ndarray):
     # rows, cols = src.shape[:2]
 
@@ -53,8 +56,8 @@ for gt_scene, test_f_scene in zip(gt_scenes, test_scenes):
             test = cv2.imread(os.path.join(test_scene_path, test_f))
             test_shape = test.shape
 
-            psnr_list.append(psnr(cv2.resize(src, (test_shape[1], test_shape[0])), test))
-            ssim_list.append(ssim(cv2.resize(src, (test_shape[1], test_shape[0])), test))
+            psnr_list.append(psnr(imresize(src, output_shape=test_shape), test))
+            ssim_list.append(ssim(imresize(src, output_shape=test_shape), test))
         except Exception as ex:
             print(ex)
             print(test_f, gt)

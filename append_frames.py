@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 import os
 
+from imresize import imresize
+
 video_type = 'nissanmurano'
 
 src_dir1 = 'videos/{}/frames_gt'.format(video_type, video_type)
@@ -38,7 +40,7 @@ for scene in scene_list:
         im1 = cv2.imread(file1)
         im2 = cv2.imread(file2)
         im_shape = im2.shape
-        im1 = cv2.resize(im1, (im_shape[1], im_shape[0]))
+        im1 = imresize(im1, output_shape=im_shape)
 
         res_img = np.append(im1, im2, axis=1)
         cv2.imwrite(os.path.join(dest_scene_path, '%05d.png' % i), res_img)
