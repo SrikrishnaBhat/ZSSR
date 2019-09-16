@@ -90,7 +90,9 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Program to run the ZSSR algorithm')
-    parser.add_argument('--configs', type=str, default='', help='path to config file')
+    parser.add_argument('--configs', type=str, default='', help='config setting to be used. Currently existing settings: '
+                                                                '[X2_ONE_JUMP_IDEAL_CONF, X2_IDEAL_WITH_PLOT_CONF, '
+                                                                'X2_GRADUAL_IDEAL_CONF, X2_GIVEN_KERNEL_CONF, X2_REAL_CONF]')
     parser.add_argument('--gpu', type=str, help='GPU device to be used', default='')
     parser.add_argument('--src', type=str, default='the base directory for the set of scene frames of a video')
     parser.add_argument('-b', default=1, type=int, help='size of training batch', dest='batch_size')
