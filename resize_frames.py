@@ -2,6 +2,7 @@ import cv2
 import os
 import sys
 import numpy as np
+from imresize import imresize
 
 def add_noise(sf, img):
     lengths = [np.random.randint(int(sf[0]**2)+1), np.random.randint(int(sf[1]**2)+1)]
@@ -25,25 +26,16 @@ def resize_frames(frame_dir, dest_dir, new_shape=None, dest_ext='.png', sf=None,
     # frame_list.sort()
 
     for index, frame_image in enumerate(frame_list):
-        if index > 30:
-            break
         name, _ = os.path.splitext(frame_image)
         frame_path = os.path.join(frame_dir, frame_image)
         dest_path = os.path.join(dest_dir, name + dest_ext)
 
         fimg = cv2.imread(frame_path)
-        old_shape = fimg.shape[:2]
+        # old_shape = fimg.shape[:2]
         if sf is not None:
-            new_shape = (int(old_shape[1]/sf[1]), int(old_shape[0]/sf[0]))
-        # elif new_shape is None:
+            dimg = imresize(fimg, scale_factor=sf)
         else:
-            new_shape = [old_shape[1], old_shape[0]]
-            if old_shape[0]%10 == 1:
-                new_shape[1] -= 1
-            if old_shape[1]%10 == 1:
-                new_shape[0] -= 1
-            new_shape = tuple(new_shape)
-        dimg = cv2.resize(fimg, new_shape)
+            dimg = imresize(fimg, output_shape=new_shape)
         if noise:
             noisy_dimg = add_noise(sf, dimg)
             cv2.imwrite(dest_path, noisy_dimg)
