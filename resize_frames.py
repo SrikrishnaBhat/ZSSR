@@ -31,21 +31,13 @@ def resize_frames(frame_dir, dest_dir, new_shape=None, dest_ext='.png', sf=None,
         name, _ = os.path.splitext(frame_image)
         frame_path = os.path.join(frame_dir, frame_image)
         dest_path = os.path.join(dest_dir, name + dest_ext)
-        print(dest_path)
 
         fimg = cv2.imread(frame_path)
-        old_shape = fimg.shape[:2]
+        old_shape = fimg.shape
         if sf is not None:
-            new_shape = (int(old_shape[1]/sf[1]), int(old_shape[0]/sf[0]))
-        # elif new_shape is None:
-        else:
-            new_shape = [old_shape[1], old_shape[0]]
-            if old_shape[0]%10 == 1:
-                new_shape[1] -= 1
-            if old_shape[1]%10 == 1:
-                new_shape[0] -= 1
-            new_shape = tuple(new_shape)
-        dimg = imresize(fimg, scale_factor=sf)
+            new_shape = tuple((np.array(old_shape) * sf).astype(np.int32))
+        dimg = imresize(fimg, output_shape=new_shape)
+        print(dest_path, old_shape, new_shape, dimg.shape)
         if noise:
             noisy_dimg = add_noise(sf, dimg)
             cv2.imwrite(dest_path, noisy_dimg)
@@ -54,10 +46,10 @@ def resize_frames(frame_dir, dest_dir, new_shape=None, dest_ext='.png', sf=None,
 
 
 if __name__ == '__main__':
-    frame_dir = sys.argv[1] if len(sys.argv) > 1 else 'BSDS300/images/test'
-    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'BSD100_assaf'
+    frame_dir = sys.argv[1] if len(sys.argv) > 1 else 'BSD100'
+    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'BSD100_resize'
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir)
 
-    sf = [0.5, 0.5]
+    sf = [2.0, 2.0, 1.0]
     resize_frames(frame_dir, dest_dir, sf=sf)
