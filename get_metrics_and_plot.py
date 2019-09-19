@@ -33,8 +33,8 @@ def ssim(src: np.ndarray, test: np.ndarray):
     denom = (mean_s**2 + mean_t**2 + c1)*(var_s + var_y + c2)
     return num/denom
 
-gt_dir = 'BSDS300/images/test'
-test_dir = 'results_BSD100_assaf_test_reinit'
+gt_dir = 'BSD100_gt'
+test_dir = 'results_BSD100_new'
 
 gt_files = os.listdir(gt_dir)
 gt_files.sort()
@@ -47,13 +47,12 @@ for gt, test_f in zip(gt_files, test_files):
         src = cv2.imread(os.path.join(gt_dir, gt))
         test = cv2.imread(os.path.join(test_dir, test_f))
         test_shape = test.shape
-        revised_src = imresize(src, output_shape=test_shape)
 
-        y_src = cv2.cvtColor(revised_src, cv2.COLOR_BGR2YCrCb)[:, :, 0]
+        y_src = cv2.cvtColor(src, cv2.COLOR_BGR2YCrCb)[:, :, 0]
         y_test = cv2.cvtColor(test, cv2.COLOR_BGR2YCrCb)[:, :, 0]
 
-        psnr_list.append(psnr(y_src, test))
-        ssim_list.append(ssim(y_src, test))
+        psnr_list.append(psnr(y_src, y_test))
+        ssim_list.append(ssim(y_src, y_test))
     except Exception as ex:
         print(ex)
         print(gt)
@@ -73,4 +72,3 @@ fig = plt.figure()
 plt.plot(ssim_list)
 fig.suptitle('SSIM of each image with mean SSIM: {}'.format(mean_ssim))
 fig.savefig('{}_{}_ssim.png'.format(gt_dir, test_dir))
-

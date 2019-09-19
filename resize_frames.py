@@ -17,7 +17,7 @@ def add_noise(sf, img):
     U = np.array([[np.cos(theta).item(), -np.sin(theta).item()], [np.sin(theta).item(), np.cos(theta).item()]])
     covar = U * length_diag * U.transpose()
     x_var, y_var = np.sqrt(covar[0, 0]), np.sqrt(covar[1, 1])
-    return cv2.GaussianBlur(img, lengths, sigmaX=x_var, sigmaY=y_var)
+    return cv2.getGaussianKernel(img, lengths, sigmaX=x_var, sigmaY=y_var)
 
 def resize_frames(frame_dir, dest_dir, new_shape=None, dest_ext='.png', sf=None, noise=False):
 
@@ -35,10 +35,15 @@ def resize_frames(frame_dir, dest_dir, new_shape=None, dest_ext='.png', sf=None,
         fimg = cv2.imread(frame_path)
         old_shape = fimg.shape
         if sf is not None:
-            new_shape = tuple((np.array(old_shape) * sf).astype(np.int32))
+            if np.array(sf).prod() == 1.0:
+                new_shape = old_shape
+            else:
+                new_shape = tuple((np.array(old_shape) * sf).astype(np.int32))
         dimg = imresize(fimg, output_shape=new_shape)
         print(dest_path, old_shape, new_shape, dimg.shape)
-        if noise:
+        if new_shape == old_shape:
+            cv2.imwrite(dest_path,fimg)
+        elif noise:
             noisy_dimg = add_noise(sf, dimg)
             cv2.imwrite(dest_path, noisy_dimg)
         else:
@@ -46,10 +51,10 @@ def resize_frames(frame_dir, dest_dir, new_shape=None, dest_ext='.png', sf=None,
 
 
 if __name__ == '__main__':
-    frame_dir = sys.argv[1] if len(sys.argv) > 1 else 'BSD100'
-    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'BSD100_resize'
+    frame_dir = sys.argv[1] if len(sys.argv) > 1 else 'BSDS300/images/test'
+    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'BSD100_gt'
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir)
 
-    sf = [2.0, 2.0, 1.0]
+    sf = [1.0, 1.0, 1.0]
     resize_frames(frame_dir, dest_dir, sf=sf)
