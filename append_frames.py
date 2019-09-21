@@ -6,8 +6,8 @@ from imresize import imresize
 
 video_type = 'nissanmurano'
 
-src_dir1 = 'videos/{}/frames_gt'.format(video_type, video_type)
-src_dir2 = 'results_{}_sf2'.format(video_type)
+src_dir1 = 'videos/{}/frames_gt_sf2'.format(video_type, video_type)
+src_dir2 = 'results_{}_sf2_assaf'.format(video_type)
 
 dest_dir = os.path.join('videos', video_type + '_' + 'gt_multi')
 if not os.path.exists(dest_dir):

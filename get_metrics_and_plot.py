@@ -33,8 +33,8 @@ def ssim(src: np.ndarray, test: np.ndarray):
     denom = (mean_s**2 + mean_t**2 + c1)*(var_s + var_y + c2)
     return num/denom
 
-gt_dir = 'videos/headnshoulders/frames_gt'
-test_dir = 'results_headnshoulders_b1_sf2'
+gt_dir = 'videos/nissanmurano/frames_gt_sf2'
+test_dir = 'results_nissanmurano_sf2_assaf_b1'
 
 gt_scenes = os.listdir(gt_dir)
 gt_scenes.sort()
@@ -42,6 +42,8 @@ test_scenes = os.listdir(test_dir)
 test_scenes.sort()
 
 psnr_list, ssim_list = [], []
+psnr_scene_based, ssim_scene_based = [], []
+scene_frames_list = []
 for gt_scene, test_f_scene in zip(gt_scenes, test_scenes):
     print(gt_scene)
     gt_scene_path = os.path.join(gt_dir, gt_scene)
@@ -50,18 +52,30 @@ for gt_scene, test_f_scene in zip(gt_scenes, test_scenes):
     test_scene_path = os.path.join(test_dir, test_f_scene, 'pred_data')
     test_files_list = os.listdir(test_scene_path)
     test_files_list.sort()
+    temp_psnr_list, temp_ssim_list = [], []
+    num = 0
     for (gt, test_f) in zip(gt_files_list, test_files_list):
         try:
             src = cv2.imread(os.path.join(gt_scene_path, gt))
             test = cv2.imread(os.path.join(test_scene_path, test_f))
             test_shape = test.shape
 
-            psnr_list.append(psnr(imresize(src, output_shape=test_shape), test))
-            ssim_list.append(ssim(imresize(src, output_shape=test_shape), test))
+            y_src = cv2.cvtColor(src, cv2.COLOR_BGR2YCrCb)[:, :, 0]
+            y_test = cv2.cvtColor(test, cv2.COLOR_BGR2YCrCb)[:, :, 0]
+
+            psnr_list.append(psnr(y_src, y_test))
+            ssim_list.append(ssim(y_src, y_test))
+            temp_psnr_list.append(psnr_list[-1])
+            temp_ssim_list.append(ssim_list[-1])
+            num += 1
         except Exception as ex:
             print(ex)
             print(test_f, gt)
             continue
+
+    psnr_scene_based.append(np.mean(temp_psnr_list))
+    ssim_scene_based.append(np.mean(temp_ssim_list))
+    scene_frames_list.append(num)
 
 
 mean_psnr = np.mean(np.asarray(psnr_list).flatten()).item()
@@ -69,16 +83,26 @@ mean_ssim = np.mean(np.asarray(ssim_list).flatten()).item()
 print('Mean PSNR / Mean SSIM : {} / {}'.format(mean_psnr, mean_ssim))
 
 fig = plt.figure()
-ax = plt.subplot(111)
-ax.plot(psnr_list)
-ax.set_ylim([0, 50])
-fig.suptitle('PSNR of each image with mean PSNR: {}'.format(mean_psnr))
-fig.savefig('plots/{}_{}_psnr.png'.format(os.path.split(gt_dir)[-1], os.path.split(test_dir)[-1]))
+ax = plt.subplot(221)
+ax.plot(psnr_scene_based)
+ax.set_ylabel('Mean PSNR (dB)')
+ax2 = plt.subplot(223)
+ax2.plot(ssim_scene_based)
+ax2.set_ylabel('Mean SSIM')
+ax3 = plt.subplot(222)
+ax3.plot(scene_frames_list)
+ax3.set_ylabel('Number of frames per scene')
+# fig.savefig('plots/P{')
+# ax.plot(psnr_list)
+# ax.set_ylim([0, 50])
+fig.suptitle('Scenewise metric values')
+fig.savefig('plots/{}_{}.png'.format(os.path.split(gt_dir)[-1], os.path.split(test_dir)[-1]))
 
-fig = plt.figure()
-ax = plt.subplot(111)
-plt.plot(ssim_list)
-ax.set_ylim([-1, 1])
-fig.suptitle('SSIM of each image with mean SSIM: {}'.format(mean_ssim))
-fig.savefig('{}_{}_ssim.png'.format(os.path.split(gt_dir)[-1], os.path.split(test_dir)[-1]))
+# ax2 = plt.subplot(122)
+# ax2.plot(scene_frames_list)
+# ax = plt.subplot(111)
+# plt.plot(ssim_list)
+# ax.set_ylim([-1, 1])
+# fig.suptitle('mean PSNR for each scene')
+# fig.savefig('plots/{}_{}_ssim.png'.format(os.path.split(gt_dir)[-1], os.path.split(test_dir)[-1]))
 

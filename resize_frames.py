@@ -27,27 +27,23 @@ def resize_frames(frame_dir, dest_dir, new_shape=None, dest_ext='.png', sf=None,
     # ref_list = os.listdir('test_data')
     frame_list.sort()
 
-    for frame_image in frame_list:
+    for index, frame_image in enumerate(frame_list):
         name, _ = os.path.splitext(frame_image)
         frame_path = os.path.join(frame_dir, frame_image)
         dest_path = os.path.join(dest_dir, name + dest_ext)
 
         fimg = cv2.imread(frame_path)
-        # old_shape = fimg.shape[:2]
-        # if sf is not None:
-        #     new_shape = (int(old_shape[1]/sf[1]), int(old_shape[0]/sf[0]))
-        # elif new_shape is None:
-        #     new_shape = [old_shape[1], old_shape[0]]
-        #     if old_shape[0]%10 == 1:
-        #         new_shape[1] -= 1
-        #     if old_shape[1]%10 == 1:
-        #         new_shape[0] -= 1
-        #     new_shape = tuple(new_shape)
+        old_shape = fimg.shape
         if sf is not None:
-            dimg = imresize(fimg, scale_factor=sf)
-        else:
-            dimg = imresize(fimg, output_shape=new_shape)
-        if noise:
+            if np.array(sf).prod() == 1.0:
+                new_shape = old_shape
+            else:
+                new_shape = tuple((np.array(old_shape) * sf).astype(np.int32))
+        dimg = imresize(fimg, output_shape=new_shape)
+        print(dest_path, old_shape, new_shape, dimg.shape)
+        if new_shape == old_shape:
+            cv2.imwrite(dest_path,fimg)
+        elif noise:
             noisy_dimg = add_noise(sf, dimg)
             cv2.imwrite(dest_path, noisy_dimg)
         else:
@@ -55,12 +51,12 @@ def resize_frames(frame_dir, dest_dir, new_shape=None, dest_ext='.png', sf=None,
 
 
 if __name__ == '__main__':
-    frame_set_dir = sys.argv[1] if len(sys.argv) > 1 else 'videos/signal_fire_productions/signal_fire_productions_resized_frames'
-    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'videos/signal_fire_productions/results_imresize'
+    frame_set_dir = sys.argv[1] if len(sys.argv) > 1 else 'videos/nissanmurano/frames'
+    dest_dir = sys.argv[2] if len(sys.argv) > 2 else 'videos/nissanmurano/frames_gt_sf2'
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir)
 
-    sf = [0.5, 0.5]
+    sf = [0.5, 0.5, 1.0]
     scene_list = os.listdir(frame_set_dir)
     scene_list.sort()
     for i, scene in enumerate(scene_list):
